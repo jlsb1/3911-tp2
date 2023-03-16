@@ -1,0 +1,36 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2636
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Analyse du r\'e9seau de P\'e9tri:\
+\
+- Borne\
+Dans ce r\'e9seau, chaque place est born\'e9e \'e0 1: \'c0 tout moment, il ne peut qu\'92y avoir un seul jeton maximum \'e0 chaque place dans le syst\'e8me.\
+\
+- Conservation\
+Dans tout le syst\'e8me, la somme des jetons reste constante dans chaque cas. La propri\'e9t\'e9 de conservation est donc respect\'e9e: Le syst\'e8me est fiable et les ressources sont bien utilis\'e9es.\
+\
+- Vivacit\'e9\
+Pour v\'e9rifier la vivacit\'e9, il faut s\'92assurer que les transition peuvent \'eatre d\'e9clench\'e9e:\
+Soit T1 la transition qui autorise une voiture a rentrer dans le tunnel cot\'e9 Montreal et T2 pour Rive Sud\
+\pard\pardeftab720\partightenfactor0
+\cf0 T1 et T2 sont activ\'e9es quand les places \'93Entr\'e9e MTL\'94 et \'93Entr\'e9e Rive Sud\'94 (respectivement) sont marqu\'e9es.\
+\
+La vivacit\'e9 est donc garentie car T1 et T2 peuvent \'eatre activ\'e9es \'e0 tout moment permettant ainsi \'e0 la progression du syst\'e8me. Effectivement, si T1 ou T2 ne peuvent pas \'eatre activ\'e9es, cela signifie qu'il n'y a pas de voiture \'e0 l'entr\'e9e c\'f4t\'e9 Montr\'e9al et c\'f4t\'e9 rive Sud. Dans les deux cas, le syst\'e8me doit attendre qu'une voiture arrive pour que la transition correspondante soit activ\'e9e et permette au syst\'e8me de progresser ce qui est assur\'e9 par la supposition d\'92un flux de voitures continue des deux cot\'e9 du tunnel.\
+\
+- Interblocage\
+Il y un interblocage is:\
+	-Deux transitions ne peuvent pas \'eatre activ\'e9es simultan\'e9ment. \
+	-Les transitions ont des pr\'e9conditions qui ne peuvent pas \'eatre satisfaites en m\'eame temps.\
+	-Le r\'e9seau a une structure cyclique\
+\
+Dans le cas de ce r\'e9seau, il n'y a pas de possibilit\'e9 d'interblocage car :\
+	-T1 et T2 sont mutuellement exclusives et ne peuvent pas \'eatre activ\'e9es en meme temps. \
+	-Les pr\'e9conditions des transitions sont satisfaites par les jetons dans les places correspondantes. \
+	-Il n'y a pas de cycle de places et de transitions dans le r\'e9seau.\
+\
+\
+}
