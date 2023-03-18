@@ -1,0 +1,203 @@
+<html>
+<head>
+    <title>IFT3911 - Devoir 2</title>
+    <style type="text/css">
+        * {
+            font-family: Helvetica;
+        }
+        table
+        {
+            border: outset 2px black;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        th
+        {
+            border-bottom: double 2px black;
+        }
+        td
+        {
+            border-bottom: solid 1px black;
+            width:150px;
+        }
+        .first_col
+        {
+            border-right: double 2px black;
+        }
+        h2{
+            font: 650 18px;
+            text-transform: uppercase;
+            border-bottom: 2px solid; 
+        }
+        h3{
+            font: 650 16px;
+            text-transform: uppercase;
+        }
+        li::marker
+        {
+            content: ">  "
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">
+        IFT 3911 - Devoir 1</h1>
+    <h2>Information générale</h2>
+        <p>
+            <span style="font-weight: bold;">Nom: </span>Ethan Mai
+            <br />
+            <span style="font-weight: bold;">Matricule: </span>20146981
+            <br />
+            <span style="font-weight: bold;">Courriel: </span>ethan.mai@umontreal.ca
+            <br />
+            <span style="font-weight: bold;">temps mis: </span>
+        </p>
+        <p>
+            <span style="font-weight: bold;">Nom: </span> Samuel Boucher
+            <br />
+            <span style="font-weight: bold;">Matricule: </span> 20115109
+            <br />
+            <span style="font-weight: bold;">Courriel: </span> samuel.boucher.1@umontreal.ca
+            <br />
+            <span style="font-weight: bold;">temps mis: </span>
+        </p>
+        <p>
+            <span style="font-weight: bold;">Nom: </span> Jean-Loup Bergeron
+            <br />
+            <span style="font-weight: bold;">Matricule: </span> 20134672
+            <br />
+            <span style="font-weight: bold;">Courriel: </span> jean-loup.bergeron@umontreal.ca
+            <br />
+            <span style="font-weight: bold;">temps mis: </span>
+        </p>
+    <h2>Distribution des tâches</h2>
+    <p>
+        <span style="font-weight: bold;">Soumetteur: Samuel</span>
+    </p>
+    <table cellpadding="7px">
+        <thead>
+            <tr>
+                <th class="first_col">
+                    Tâche
+                </th>
+                <th>
+                    Ethan
+                </th>
+                <th>
+                    Samuel
+                </th>
+                <th>
+                    Jean-Loup
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="first_col">
+                    Réseau de Pétri
+                </td>
+                <td>
+                    100%
+                </td>
+                <td>
+                    
+                </td>
+                <td>
+                    
+                </td>
+            </tr>
+            <tr>
+                <td class="first_col">
+                    Statechart
+                </td>
+                <td>
+                    
+                </td>
+                <td>
+                    100%
+                </td>
+                <td>
+                    
+                </td>
+            </tr>
+            <tr>
+                <td class="first_col">
+                    Design du logiciel
+                </td>
+                <td>
+                    
+                </td>
+                <td>
+                    
+                </td>
+                <td>
+                    
+                </td>
+            </tr>
+            <tr>
+                <td class="first_col">
+                    Qualité du design
+                </td>
+                <td>
+                    
+                </td>
+                <td>
+                    
+                </td>
+                <td>
+                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>Sommaire</h2>
+    <h2>Réseau de Pétri</h2>
+    <h2>Statechart</h2>
+        <a href="Statechart/microwave.png"><img src="Statechart/microwave.png"></a>
+        <ul>
+            <li>
+                Nous avons présumé de l'énoncé de la question que le nombre créé par
+                les chiffres entrés après avoir fait "timer" représentent un
+                entier entre 1 et 9999 secondes. Le micro-ondes affichera 9999
+                secondes comme "99:99".
+            </li>
+            <li>
+                Nous avons présumé, pour modéliser un four à micro-ondes réel, que
+                la sonnerie sonne en alternance (on, off...) en suivant l'affichage
+                qui clignote.
+            </li>
+            <li>
+                Nous avons présumé qu'à n'importe quel moment où on ouvre la porte,
+                on affiche "Waiting" et les boutons ne font rien pendant qu'on
+                est en attente. Lorsqu'on ferme la porte, on revient dans l'état
+                où on se trouvait avant.
+                <ul>
+                    <li>
+                        eg. si on était dans l'état "Temps" et qu'on ouvre la porte,
+                        si on appuie sur des chiffres pendant que la porte est ouverte
+                        le temps de cuisson ne changera pas.
+                    </li>
+                    <li>
+                        eg. si on était rendu au clignotement du message 
+                        "Waiting" à la fin de la cuisson, on retourne dans cet
+                        état et on y reste pour le nombre de secondes qu'il restait
+                        avant de le quitter.
+                    </li>
+                </ul>
+            </li>
+            <li>
+                Nous avons compris du bouton stop qu'il nous fait revenir à la case
+                départ (état "Init") peu importe où on était dans l'exécution normale 
+                du micro-ondes. Le bouton n'a pas d'effet si la porte est ouverte parce
+                que le système au complet est en attente.
+            </li>
+        </ul>
+    <h2>Design du logiciel</h2>
+    <h2>Qualité du design</h2>
+        <h3>Couplage et cohésion des modules</h3>
+        <h3>Fardeau</h3>
+        <h3>Graphe IA</h3>
+        <h3>Justifications de l'application des principes de conception</h3>
+</p>
+</body>
+</html>
