@@ -9,18 +9,14 @@ import java.util.Queue;
 
 public class Microwave implements ITimed, IEventDriven {
 	public enum State {
-		MICROWAVE_INIT,
 		MICROWAVE_ENMARCHE,
 		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL,
 		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_PUISSANCE,
 		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_PUISSANCE_PUISSANCE_HIGH,
 		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_PUISSANCE_PUISSANCE_LOW,
 		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS,
-		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__0BOUTONPRESSE,
-		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__1BOUTONPRESSE,
-		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__2BOUTONSPRESSES,
-		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__3BOUTONSPRESSES,
-		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__4BOUTONSPRESSES,
+		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_BOUTONPRESSE,
+		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_DISPLAYTIME,
 		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_CUISSON,
 		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_CUISSON_CUISSON_CUISSON,
 		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_CUISSON_CUISSON_PRETACUIRE,
@@ -28,7 +24,7 @@ public class Microwave implements ITimed, IEventDriven {
 		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_FINISHED_FINISHED_FLASHCLEAR,
 		MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_FINISHED_FINISHED_FLASHFINISHED,
 		MICROWAVE_ENMARCHE_ENMARCHE_ATTENTE,
-		MICROWAVE_FINI,
+		MICROWAVE_ENMARCHE_ENMARCHE_INIT,
 		$NULLSTATE$
 	};
 	
@@ -37,7 +33,7 @@ public class Microwave implements ITimed, IEventDriven {
 	
 	private ITimerService timerService;
 	
-	private final boolean[] timeEvents = new boolean[4];
+	private final boolean[] timeEvents = new boolean[5];
 	
 	private Queue<Runnable> inEventQueue = new LinkedList<Runnable>();
 	private boolean wasCooking;
@@ -59,6 +55,17 @@ public class Microwave implements ITimed, IEventDriven {
 	
 	protected void setTimeLeft(long value) {
 		this.timeLeft = value;
+	}
+	
+	
+	private long nbBtnTpsPresses;
+	
+	protected long getNbBtnTpsPresses() {
+		return nbBtnTpsPresses;
+	}
+	
+	protected void setNbBtnTpsPresses(long value) {
+		this.nbBtnTpsPresses = value;
 	}
 	
 	
@@ -86,6 +93,8 @@ public class Microwave implements ITimed, IEventDriven {
 		setWasCooking(false);
 		
 		setTimeLeft(0l);
+		
+		setNbBtnTpsPresses(0l);
 		
 		isExecuting = false;
 	}
@@ -146,33 +155,22 @@ public class Microwave implements ITimed, IEventDriven {
 		timeEvents[1] = false;
 		timeEvents[2] = false;
 		timeEvents[3] = false;
+		timeEvents[4] = false;
 	}
 	
 	private void microStep() {
 		switch (stateVector[0]) {
-		case MICROWAVE_INIT:
-			microwave_Init_react(-1l);
-			break;
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_PUISSANCE_PUISSANCE_HIGH:
 			microwave_Enmarche_enmarche_Normal_normal_Puissance_puissance_high_react(-1l);
 			break;
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_PUISSANCE_PUISSANCE_LOW:
 			microwave_Enmarche_enmarche_Normal_normal_Puissance_puissance_low_react(-1l);
 			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__0BOUTONPRESSE:
-			microwave_Enmarche_enmarche_Normal_normal_Temps_temps__0boutonpresse_react(-1l);
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_BOUTONPRESSE:
+			microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse_react(-1l);
 			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__1BOUTONPRESSE:
-			microwave_Enmarche_enmarche_Normal_normal_Temps_temps__1boutonpresse_react(-1l);
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__2BOUTONSPRESSES:
-			microwave_Enmarche_enmarche_Normal_normal_Temps_temps__2boutonspresses_react(-1l);
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__3BOUTONSPRESSES:
-			microwave_Enmarche_enmarche_Normal_normal_Temps_temps__3boutonspresses_react(-1l);
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__4BOUTONSPRESSES:
-			microwave_Enmarche_enmarche_Normal_normal_Temps_temps__4boutonspresses_react(-1l);
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_DISPLAYTIME:
+			microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime_react(-1l);
 			break;
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_CUISSON_CUISSON_CUISSON:
 			microwave_Enmarche_enmarche_Normal_normal_Cuisson_cuisson_cuisson_react(-1l);
@@ -189,8 +187,8 @@ public class Microwave implements ITimed, IEventDriven {
 		case MICROWAVE_ENMARCHE_ENMARCHE_ATTENTE:
 			microwave_Enmarche_enmarche_attente_react(-1l);
 			break;
-		case MICROWAVE_FINI:
-			microwave_fini_react(-1l);
+		case MICROWAVE_ENMARCHE_ENMARCHE_INIT:
+			microwave_Enmarche_enmarche_Init_react(-1l);
 			break;
 		default:
 			break;
@@ -234,11 +232,9 @@ public class Microwave implements ITimed, IEventDriven {
 	public boolean isStateActive(State state) {
 	
 		switch (state) {
-		case MICROWAVE_INIT:
-			return stateVector[0] == State.MICROWAVE_INIT;
 		case MICROWAVE_ENMARCHE:
 			return stateVector[0].ordinal() >= State.
-					MICROWAVE_ENMARCHE.ordinal()&& stateVector[0].ordinal() <= State.MICROWAVE_ENMARCHE_ENMARCHE_ATTENTE.ordinal();
+					MICROWAVE_ENMARCHE.ordinal()&& stateVector[0].ordinal() <= State.MICROWAVE_ENMARCHE_ENMARCHE_INIT.ordinal();
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL:
 			return stateVector[0].ordinal() >= State.
 					MICROWAVE_ENMARCHE_ENMARCHE_NORMAL.ordinal()&& stateVector[0].ordinal() <= State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_FINISHED_FINISHED_FLASHFINISHED.ordinal();
@@ -251,17 +247,11 @@ public class Microwave implements ITimed, IEventDriven {
 			return stateVector[0] == State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_PUISSANCE_PUISSANCE_LOW;
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS:
 			return stateVector[0].ordinal() >= State.
-					MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS.ordinal()&& stateVector[0].ordinal() <= State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__4BOUTONSPRESSES.ordinal();
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__0BOUTONPRESSE:
-			return stateVector[0] == State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__0BOUTONPRESSE;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__1BOUTONPRESSE:
-			return stateVector[0] == State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__1BOUTONPRESSE;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__2BOUTONSPRESSES:
-			return stateVector[0] == State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__2BOUTONSPRESSES;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__3BOUTONSPRESSES:
-			return stateVector[0] == State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__3BOUTONSPRESSES;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__4BOUTONSPRESSES:
-			return stateVector[0] == State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__4BOUTONSPRESSES;
+					MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS.ordinal()&& stateVector[0].ordinal() <= State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_DISPLAYTIME.ordinal();
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_BOUTONPRESSE:
+			return stateVector[0] == State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_BOUTONPRESSE;
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_DISPLAYTIME:
+			return stateVector[0] == State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_DISPLAYTIME;
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_CUISSON:
 			return stateVector[0].ordinal() >= State.
 					MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_CUISSON.ordinal()&& stateVector[0].ordinal() <= State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_CUISSON_CUISSON_PRETACUIRE.ordinal();
@@ -278,8 +268,8 @@ public class Microwave implements ITimed, IEventDriven {
 			return stateVector[0] == State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_FINISHED_FINISHED_FLASHFINISHED;
 		case MICROWAVE_ENMARCHE_ENMARCHE_ATTENTE:
 			return stateVector[0] == State.MICROWAVE_ENMARCHE_ENMARCHE_ATTENTE;
-		case MICROWAVE_FINI:
-			return stateVector[0] == State.MICROWAVE_FINI;
+		case MICROWAVE_ENMARCHE_ENMARCHE_INIT:
+			return stateVector[0] == State.MICROWAVE_ENMARCHE_ENMARCHE_INIT;
 		default:
 			return false;
 		}
@@ -427,13 +417,6 @@ public class Microwave implements ITimed, IEventDriven {
 		this.power = value;
 	}
 	
-	/* Entry action for state 'Init'. */
-	private void entryAction_Microwave_Init() {
-		operationCallback.clearDisplay();
-		
-		operationCallback.closeDoor();
-	}
-	
 	/* Entry action for state 'high'. */
 	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Puissance_puissance_high() {
 		operationCallback.display("High");
@@ -448,70 +431,58 @@ public class Microwave implements ITimed, IEventDriven {
 		setPower(2l);
 	}
 	
-	/* Entry action for state '0boutonpresse'. */
-	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__0boutonpresse() {
-		operationCallback.displayTime(getTimeLeft());
-	}
-	
-	/* Entry action for state '1boutonpresse'. */
-	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__1boutonpresse() {
-		setTimeLeft(getTimeLeft() + (getDigitValue()));
+	/* Entry action for state 'boutonPresse'. */
+	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse() {
+		timerService.setTimer(this, 0, 1l, false);
 		
-		operationCallback.displayTime(getTimeLeft());
-	}
-	
-	/* Entry action for state '2boutonspresses'. */
-	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__2boutonspresses() {
 		setTimeLeft(((timeLeft * 10l) + getDigitValue()));
 		
-		operationCallback.displayTime(getTimeLeft());
+		setNbBtnTpsPresses((nbBtnTpsPresses + 1l));
 	}
 	
-	/* Entry action for state '3boutonspresses'. */
-	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__3boutonspresses() {
-		setTimeLeft(((timeLeft * 10l) + getDigitValue()));
-		
-		operationCallback.displayTime(getTimeLeft());
-	}
-	
-	/* Entry action for state '4boutonspresses'. */
-	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__4boutonspresses() {
-		setTimeLeft(((timeLeft * 10l) + getDigitValue()));
-		
+	/* Entry action for state 'displayTime'. */
+	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime() {
 		operationCallback.displayTime(getTimeLeft());
 	}
 	
 	/* Entry action for state 'Cuisson'. */
 	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Cuisson() {
 		setWasCooking(true);
+		
+		operationCallback.cook();
 	}
 	
 	/* Entry action for state 'cuisson'. */
 	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Cuisson_cuisson_cuisson() {
-		timerService.setTimer(this, 0, (1l * 1000l), false);
+		timerService.setTimer(this, 1, (1l * 1000l), false);
 		
 		operationCallback.displayTime(getTimeLeft());
 	}
 	
+	/* Entry action for state 'pretacuire'. */
+	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Cuisson_cuisson_pretacuire() {
+		operationCallback.stopCook();
+	}
+	
 	/* Entry action for state 'Finished'. */
 	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Finished() {
-		timerService.setTimer(this, 1, (5l * 1000l), false);
+		timerService.setTimer(this, 2, (5l * 1000l), false);
 		
 		operationCallback.beepOn();
 		
-		operationCallback.stopCook();
+		setWasCooking(false);
 	}
 	
 	/* Entry action for state 'flashClear'. */
 	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Finished_finished_flashClear() {
-		timerService.setTimer(this, 2, 500l, false);
+		timerService.setTimer(this, 3, 500l, false);
 		
 		operationCallback.clearDisplay();
 	}
 	
 	/* Entry action for state 'flashFinished'. */
 	private void entryAction_Microwave_Enmarche_enmarche_Normal_normal_Finished_finished_flashFinished() {
-		timerService.setTimer(this, 3, 500l, false);
+		timerService.setTimer(this, 4, 500l, false);
 		
 		operationCallback.display("Finished");
 	}
@@ -523,9 +494,22 @@ public class Microwave implements ITimed, IEventDriven {
 		operationCallback.display("Waiting");
 	}
 	
-	/* Entry action for state 'fini'. */
-	private void entryAction_Microwave_fini() {
+	/* Entry action for state 'Init'. */
+	private void entryAction_Microwave_Enmarche_enmarche_Init() {
 		operationCallback.clearDisplay();
+		
+		operationCallback.closeDoor();
+		
+		setWasCooking(false);
+		
+		setTimeLeft(0l);
+		
+		setNbBtnTpsPresses(0l);
+	}
+	
+	/* Exit action for state 'boutonPresse'. */
+	private void exitAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse() {
+		timerService.unsetTimer(this, 0);
 	}
 	
 	/* Exit action for state 'Cuisson'. */
@@ -535,7 +519,7 @@ public class Microwave implements ITimed, IEventDriven {
 	
 	/* Exit action for state 'cuisson'. */
 	private void exitAction_Microwave_Enmarche_enmarche_Normal_normal_Cuisson_cuisson_cuisson() {
-		timerService.unsetTimer(this, 0);
+		timerService.unsetTimer(this, 1);
 		
 		setTimeLeft(getTimeLeft() - 1l);
 	}
@@ -547,19 +531,19 @@ public class Microwave implements ITimed, IEventDriven {
 	
 	/* Exit action for state 'Finished'. */
 	private void exitAction_Microwave_Enmarche_enmarche_Normal_normal_Finished() {
-		timerService.unsetTimer(this, 1);
+		timerService.unsetTimer(this, 2);
 		
 		operationCallback.beepOff();
 	}
 	
 	/* Exit action for state 'flashClear'. */
 	private void exitAction_Microwave_Enmarche_enmarche_Normal_normal_Finished_finished_flashClear() {
-		timerService.unsetTimer(this, 2);
+		timerService.unsetTimer(this, 3);
 	}
 	
 	/* Exit action for state 'flashFinished'. */
 	private void exitAction_Microwave_Enmarche_enmarche_Normal_normal_Finished_finished_flashFinished() {
-		timerService.unsetTimer(this, 3);
+		timerService.unsetTimer(this, 4);
 	}
 	
 	/* Exit action for state 'attente'. */
@@ -567,20 +551,9 @@ public class Microwave implements ITimed, IEventDriven {
 		operationCallback.closeDoor();
 	}
 	
-	/* 'default' enter sequence for state Init */
-	private void enterSequence_Microwave_Init_default() {
-		entryAction_Microwave_Init();
-		stateVector[0] = State.MICROWAVE_INIT;
-	}
-	
 	/* 'default' enter sequence for state Enmarche */
 	private void enterSequence_Microwave_Enmarche_default() {
 		enterSequence_Microwave_Enmarche_enmarche_default();
-	}
-	
-	/* 'default' enter sequence for state Normal */
-	private void enterSequence_Microwave_Enmarche_enmarche_Normal_default() {
-		enterSequence_Microwave_Enmarche_enmarche_Normal_normal_default();
 	}
 	
 	/* 'default' enter sequence for state Puissance */
@@ -611,42 +584,18 @@ public class Microwave implements ITimed, IEventDriven {
 		historyVector[0] = stateVector[0];
 	}
 	
-	/* 'default' enter sequence for state 0boutonpresse */
-	private void enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__0boutonpresse_default() {
-		entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__0boutonpresse();
-		stateVector[0] = State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__0BOUTONPRESSE;
+	/* 'default' enter sequence for state boutonPresse */
+	private void enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse_default() {
+		entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse();
+		stateVector[0] = State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_BOUTONPRESSE;
 		
 		historyVector[2] = stateVector[0];
 	}
 	
-	/* 'default' enter sequence for state 1boutonpresse */
-	private void enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__1boutonpresse_default() {
-		entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__1boutonpresse();
-		stateVector[0] = State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__1BOUTONPRESSE;
-		
-		historyVector[2] = stateVector[0];
-	}
-	
-	/* 'default' enter sequence for state 2boutonspresses */
-	private void enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__2boutonspresses_default() {
-		entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__2boutonspresses();
-		stateVector[0] = State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__2BOUTONSPRESSES;
-		
-		historyVector[2] = stateVector[0];
-	}
-	
-	/* 'default' enter sequence for state 3boutonspresses */
-	private void enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__3boutonspresses_default() {
-		entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__3boutonspresses();
-		stateVector[0] = State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__3BOUTONSPRESSES;
-		
-		historyVector[2] = stateVector[0];
-	}
-	
-	/* 'default' enter sequence for state 4boutonspresses */
-	private void enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__4boutonspresses_default() {
-		entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__4boutonspresses();
-		stateVector[0] = State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__4BOUTONSPRESSES;
+	/* 'default' enter sequence for state displayTime */
+	private void enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime_default() {
+		entryAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime();
+		stateVector[0] = State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_DISPLAYTIME;
 		
 		historyVector[2] = stateVector[0];
 	}
@@ -668,6 +617,7 @@ public class Microwave implements ITimed, IEventDriven {
 	
 	/* 'default' enter sequence for state pretacuire */
 	private void enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Cuisson_cuisson_pretacuire_default() {
+		entryAction_Microwave_Enmarche_enmarche_Normal_normal_Cuisson_cuisson_pretacuire();
 		stateVector[0] = State.MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_CUISSON_CUISSON_PRETACUIRE;
 		
 		historyVector[3] = stateVector[0];
@@ -702,10 +652,10 @@ public class Microwave implements ITimed, IEventDriven {
 		stateVector[0] = State.MICROWAVE_ENMARCHE_ENMARCHE_ATTENTE;
 	}
 	
-	/* 'default' enter sequence for state fini */
-	private void enterSequence_Microwave_fini_default() {
-		entryAction_Microwave_fini();
-		stateVector[0] = State.MICROWAVE_FINI;
+	/* 'default' enter sequence for state Init */
+	private void enterSequence_Microwave_Enmarche_enmarche_Init_default() {
+		entryAction_Microwave_Enmarche_enmarche_Init();
+		stateVector[0] = State.MICROWAVE_ENMARCHE_ENMARCHE_INIT;
 	}
 	
 	/* 'default' enter sequence for region Microwave */
@@ -718,11 +668,6 @@ public class Microwave implements ITimed, IEventDriven {
 		react_Microwave_Enmarche_enmarche__entry_Default();
 	}
 	
-	/* 'default' enter sequence for region normal */
-	private void enterSequence_Microwave_Enmarche_enmarche_Normal_normal_default() {
-		react_Microwave_Enmarche_enmarche_Normal_normal__entry_Default();
-	}
-	
 	/* deep enterSequence with history in child normal */
 	private void deepEnterSequence_Microwave_Enmarche_enmarche_Normal_normal() {
 		switch (historyVector[0]) {
@@ -732,19 +677,10 @@ public class Microwave implements ITimed, IEventDriven {
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_PUISSANCE_PUISSANCE_LOW:
 			deepEnterSequence_Microwave_Enmarche_enmarche_Normal_normal_Puissance_puissance();
 			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__0BOUTONPRESSE:
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_BOUTONPRESSE:
 			deepEnterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps();
 			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__1BOUTONPRESSE:
-			deepEnterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__2BOUTONSPRESSES:
-			deepEnterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__3BOUTONSPRESSES:
-			deepEnterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__4BOUTONSPRESSES:
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_DISPLAYTIME:
 			deepEnterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps();
 			break;
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_CUISSON_CUISSON_CUISSON:
@@ -795,20 +731,11 @@ public class Microwave implements ITimed, IEventDriven {
 	/* deep enterSequence with history in child temps */
 	private void deepEnterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps() {
 		switch (historyVector[2]) {
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__0BOUTONPRESSE:
-			enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__0boutonpresse_default();
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_BOUTONPRESSE:
+			enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse_default();
 			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__1BOUTONPRESSE:
-			enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__1boutonpresse_default();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__2BOUTONSPRESSES:
-			enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__2boutonspresses_default();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__3BOUTONSPRESSES:
-			enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__3boutonspresses_default();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__4BOUTONSPRESSES:
-			enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__4boutonspresses_default();
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_DISPLAYTIME:
+			enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime_default();
 			break;
 		default:
 			break;
@@ -853,11 +780,6 @@ public class Microwave implements ITimed, IEventDriven {
 		}
 	}
 	
-	/* Default exit sequence for state Init */
-	private void exitSequence_Microwave_Init() {
-		stateVector[0] = State.$NULLSTATE$;
-	}
-	
 	/* Default exit sequence for state Enmarche */
 	private void exitSequence_Microwave_Enmarche() {
 		exitSequence_Microwave_Enmarche_enmarche();
@@ -888,28 +810,15 @@ public class Microwave implements ITimed, IEventDriven {
 		exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps();
 	}
 	
-	/* Default exit sequence for state 0boutonpresse */
-	private void exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__0boutonpresse() {
+	/* Default exit sequence for state boutonPresse */
+	private void exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse() {
 		stateVector[0] = State.$NULLSTATE$;
+		
+		exitAction_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse();
 	}
 	
-	/* Default exit sequence for state 1boutonpresse */
-	private void exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__1boutonpresse() {
-		stateVector[0] = State.$NULLSTATE$;
-	}
-	
-	/* Default exit sequence for state 2boutonspresses */
-	private void exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__2boutonspresses() {
-		stateVector[0] = State.$NULLSTATE$;
-	}
-	
-	/* Default exit sequence for state 3boutonspresses */
-	private void exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__3boutonspresses() {
-		stateVector[0] = State.$NULLSTATE$;
-	}
-	
-	/* Default exit sequence for state 4boutonspresses */
-	private void exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__4boutonspresses() {
+	/* Default exit sequence for state displayTime */
+	private void exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime() {
 		stateVector[0] = State.$NULLSTATE$;
 	}
 	
@@ -954,37 +863,25 @@ public class Microwave implements ITimed, IEventDriven {
 		exitAction_Microwave_Enmarche_enmarche_attente();
 	}
 	
-	/* Default exit sequence for state fini */
-	private void exitSequence_Microwave_fini() {
+	/* Default exit sequence for state Init */
+	private void exitSequence_Microwave_Enmarche_enmarche_Init() {
 		stateVector[0] = State.$NULLSTATE$;
 	}
 	
 	/* Default exit sequence for region Microwave */
 	private void exitSequence_Microwave() {
 		switch (stateVector[0]) {
-		case MICROWAVE_INIT:
-			exitSequence_Microwave_Init();
-			break;
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_PUISSANCE_PUISSANCE_HIGH:
 			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Puissance_puissance_high();
 			break;
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_PUISSANCE_PUISSANCE_LOW:
 			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Puissance_puissance_low();
 			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__0BOUTONPRESSE:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__0boutonpresse();
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_BOUTONPRESSE:
+			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse();
 			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__1BOUTONPRESSE:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__1boutonpresse();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__2BOUTONSPRESSES:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__2boutonspresses();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__3BOUTONSPRESSES:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__3boutonspresses();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__4BOUTONSPRESSES:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__4boutonspresses();
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_DISPLAYTIME:
+			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime();
 			break;
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_CUISSON_CUISSON_CUISSON:
 			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Cuisson_cuisson_cuisson();
@@ -1005,8 +902,8 @@ public class Microwave implements ITimed, IEventDriven {
 		case MICROWAVE_ENMARCHE_ENMARCHE_ATTENTE:
 			exitSequence_Microwave_Enmarche_enmarche_attente();
 			break;
-		case MICROWAVE_FINI:
-			exitSequence_Microwave_fini();
+		case MICROWAVE_ENMARCHE_ENMARCHE_INIT:
+			exitSequence_Microwave_Enmarche_enmarche_Init();
 			break;
 		default:
 			break;
@@ -1022,20 +919,11 @@ public class Microwave implements ITimed, IEventDriven {
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_PUISSANCE_PUISSANCE_LOW:
 			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Puissance_puissance_low();
 			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__0BOUTONPRESSE:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__0boutonpresse();
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_BOUTONPRESSE:
+			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse();
 			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__1BOUTONPRESSE:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__1boutonpresse();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__2BOUTONSPRESSES:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__2boutonspresses();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__3BOUTONSPRESSES:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__3boutonspresses();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__4BOUTONSPRESSES:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__4boutonspresses();
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_DISPLAYTIME:
+			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime();
 			break;
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_CUISSON_CUISSON_CUISSON:
 			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Cuisson_cuisson_cuisson();
@@ -1056,6 +944,9 @@ public class Microwave implements ITimed, IEventDriven {
 		case MICROWAVE_ENMARCHE_ENMARCHE_ATTENTE:
 			exitSequence_Microwave_Enmarche_enmarche_attente();
 			break;
+		case MICROWAVE_ENMARCHE_ENMARCHE_INIT:
+			exitSequence_Microwave_Enmarche_enmarche_Init();
+			break;
 		default:
 			break;
 		}
@@ -1070,20 +961,11 @@ public class Microwave implements ITimed, IEventDriven {
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_PUISSANCE_PUISSANCE_LOW:
 			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Puissance_puissance_low();
 			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__0BOUTONPRESSE:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__0boutonpresse();
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_BOUTONPRESSE:
+			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse();
 			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__1BOUTONPRESSE:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__1boutonpresse();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__2BOUTONSPRESSES:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__2boutonspresses();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__3BOUTONSPRESSES:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__3boutonspresses();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__4BOUTONSPRESSES:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__4boutonspresses();
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_DISPLAYTIME:
+			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime();
 			break;
 		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_CUISSON_CUISSON_CUISSON:
 			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Cuisson_cuisson_cuisson();
@@ -1123,20 +1005,11 @@ public class Microwave implements ITimed, IEventDriven {
 	/* Default exit sequence for region temps */
 	private void exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps() {
 		switch (stateVector[0]) {
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__0BOUTONPRESSE:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__0boutonpresse();
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_BOUTONPRESSE:
+			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse();
 			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__1BOUTONPRESSE:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__1boutonpresse();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__2BOUTONSPRESSES:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__2boutonspresses();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__3BOUTONSPRESSES:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__3boutonspresses();
-			break;
-		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS__4BOUTONSPRESSES:
-			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__4boutonspresses();
+		case MICROWAVE_ENMARCHE_ENMARCHE_NORMAL_NORMAL_TEMPS_TEMPS_DISPLAYTIME:
+			exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime();
 			break;
 		default:
 			break;
@@ -1168,7 +1041,7 @@ public class Microwave implements ITimed, IEventDriven {
 	
 	/* Default react sequence for initial entry  */
 	private void react_Microwave__entry_Default() {
-		enterSequence_Microwave_Init_default();
+		enterSequence_Microwave_Enmarche_default();
 	}
 	
 	/* Default react sequence for initial entry  */
@@ -1178,7 +1051,7 @@ public class Microwave implements ITimed, IEventDriven {
 	
 	/* Default react sequence for initial entry  */
 	private void react_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__entry_Default() {
-		enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__0boutonpresse_default();
+		enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime_default();
 	}
 	
 	/* Default react sequence for initial entry  */
@@ -1203,22 +1076,11 @@ public class Microwave implements ITimed, IEventDriven {
 	
 	/* Default react sequence for initial entry  */
 	private void react_Microwave_Enmarche_enmarche__entry_Default() {
-		enterSequence_Microwave_Enmarche_enmarche_Normal_default();
+		enterSequence_Microwave_Enmarche_enmarche_Init_default();
 	}
 	
 	private long react(long transitioned_before) {
 		return transitioned_before;
-	}
-	
-	private long microwave_Init_react(long transitioned_before) {
-		long transitioned_after = react(transitioned_before);
-		
-		if (transitioned_after<0l) {
-			exitSequence_Microwave_Init();
-			enterSequence_Microwave_Enmarche_default();
-			transitioned_after = 0l;
-		}
-		return transitioned_after;
 	}
 	
 	private long microwave_Enmarche_react(long transitioned_before) {
@@ -1227,7 +1089,7 @@ public class Microwave implements ITimed, IEventDriven {
 		if (transitioned_after<0l) {
 			if (stop) {
 				exitSequence_Microwave_Enmarche();
-				enterSequence_Microwave_fini_default();
+				enterSequence_Microwave_Enmarche_enmarche_Init_default();
 				transitioned_after = 0l;
 			}
 		}
@@ -1302,60 +1164,31 @@ public class Microwave implements ITimed, IEventDriven {
 		return transitioned_after;
 	}
 	
-	private long microwave_Enmarche_enmarche_Normal_normal_Temps_temps__0boutonpresse_react(long transitioned_before) {
+	private long microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse_react(long transitioned_before) {
 		long transitioned_after = microwave_Enmarche_enmarche_Normal_normal_Temps_react(transitioned_before);
 		
 		if (transitioned_after<0l) {
-			if (digit) {
-				exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__0boutonpresse();
-				enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__1boutonpresse_default();
+			if (timeEvents[0]) {
+				exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse();
+				timeEvents[0] = false;
+				enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime_default();
 				transitioned_after = 0l;
 			}
 		}
 		return transitioned_after;
 	}
 	
-	private long microwave_Enmarche_enmarche_Normal_normal_Temps_temps__1boutonpresse_react(long transitioned_before) {
+	private long microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime_react(long transitioned_before) {
 		long transitioned_after = microwave_Enmarche_enmarche_Normal_normal_Temps_react(transitioned_before);
 		
 		if (transitioned_after<0l) {
-			if (digit) {
-				exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__1boutonpresse();
-				enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__2boutonspresses_default();
+			if (((digit) && (getNbBtnTpsPresses()<4l))) {
+				exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_displayTime();
+				enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps_boutonPresse_default();
 				transitioned_after = 0l;
 			}
 		}
 		return transitioned_after;
-	}
-	
-	private long microwave_Enmarche_enmarche_Normal_normal_Temps_temps__2boutonspresses_react(long transitioned_before) {
-		long transitioned_after = microwave_Enmarche_enmarche_Normal_normal_Temps_react(transitioned_before);
-		
-		if (transitioned_after<0l) {
-			if (digit) {
-				exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__2boutonspresses();
-				enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__3boutonspresses_default();
-				transitioned_after = 0l;
-			}
-		}
-		return transitioned_after;
-	}
-	
-	private long microwave_Enmarche_enmarche_Normal_normal_Temps_temps__3boutonspresses_react(long transitioned_before) {
-		long transitioned_after = microwave_Enmarche_enmarche_Normal_normal_Temps_react(transitioned_before);
-		
-		if (transitioned_after<0l) {
-			if (digit) {
-				exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__3boutonspresses();
-				enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Temps_temps__4boutonspresses_default();
-				transitioned_after = 0l;
-			}
-		}
-		return transitioned_after;
-	}
-	
-	private long microwave_Enmarche_enmarche_Normal_normal_Temps_temps__4boutonspresses_react(long transitioned_before) {
-		return microwave_Enmarche_enmarche_Normal_normal_Temps_react(transitioned_before);
 	}
 	
 	private long microwave_Enmarche_enmarche_Normal_normal_Cuisson_react(long transitioned_before) {
@@ -1375,9 +1208,9 @@ public class Microwave implements ITimed, IEventDriven {
 		long transitioned_after = microwave_Enmarche_enmarche_Normal_normal_Cuisson_react(transitioned_before);
 		
 		if (transitioned_after<0l) {
-			if (timeEvents[0]) {
+			if (timeEvents[1]) {
 				exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Cuisson_cuisson_cuisson();
-				timeEvents[0] = false;
+				timeEvents[1] = false;
 				enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Cuisson_cuisson_cuisson_default();
 				transitioned_after = 0l;
 			}
@@ -1402,10 +1235,10 @@ public class Microwave implements ITimed, IEventDriven {
 		long transitioned_after = microwave_Enmarche_enmarche_Normal_react(transitioned_before);
 		
 		if (transitioned_after<0l) {
-			if (timeEvents[1]) {
-				exitSequence_Microwave_Enmarche();
-				timeEvents[1] = false;
-				enterSequence_Microwave_fini_default();
+			if (timeEvents[2]) {
+				exitSequence_Microwave_Enmarche_enmarche_Normal();
+				timeEvents[2] = false;
+				enterSequence_Microwave_Enmarche_enmarche_Init_default();
 				transitioned_after = 0l;
 			}
 		}
@@ -1416,9 +1249,9 @@ public class Microwave implements ITimed, IEventDriven {
 		long transitioned_after = microwave_Enmarche_enmarche_Normal_normal_Finished_react(transitioned_before);
 		
 		if (transitioned_after<0l) {
-			if (timeEvents[2]) {
+			if (timeEvents[3]) {
 				exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Finished_finished_flashClear();
-				timeEvents[2] = false;
+				timeEvents[3] = false;
 				enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Finished_finished_flashFinished_default();
 				transitioned_after = 0l;
 			}
@@ -1430,9 +1263,9 @@ public class Microwave implements ITimed, IEventDriven {
 		long transitioned_after = microwave_Enmarche_enmarche_Normal_normal_Finished_react(transitioned_before);
 		
 		if (transitioned_after<0l) {
-			if (timeEvents[3]) {
+			if (timeEvents[4]) {
 				exitSequence_Microwave_Enmarche_enmarche_Normal_normal_Finished_finished_flashFinished();
-				timeEvents[3] = false;
+				timeEvents[4] = false;
 				enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Finished_finished_flashClear_default();
 				transitioned_after = 0l;
 			}
@@ -1453,8 +1286,27 @@ public class Microwave implements ITimed, IEventDriven {
 		return transitioned_after;
 	}
 	
-	private long microwave_fini_react(long transitioned_before) {
-		return react(transitioned_before);
+	private long microwave_Enmarche_enmarche_Init_react(long transitioned_before) {
+		long transitioned_after = microwave_Enmarche_react(transitioned_before);
+		
+		if (transitioned_after<0l) {
+			if (high) {
+				exitSequence_Microwave_Enmarche_enmarche_Init();
+				enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Puissance_puissance_high_default();
+				historyVector[0] = stateVector[0];
+				
+				transitioned_after = 0l;
+			} else {
+				if (low) {
+					exitSequence_Microwave_Enmarche_enmarche_Init();
+					enterSequence_Microwave_Enmarche_enmarche_Normal_normal_Puissance_puissance_low_default();
+					historyVector[0] = stateVector[0];
+					
+					transitioned_after = 0l;
+				}
+			}
+		}
+		return transitioned_after;
 	}
 	
 	/* Can be used by the client code to trigger a run to completion step without raising an event. */

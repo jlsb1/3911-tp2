@@ -2,8 +2,9 @@
 package microwave.microwave;
 
 import microwave.IStatemachine;
+import microwave.ITimerCallback;
 
-public interface IMicrowaveStatemachine extends IStatemachine {
+public interface IMicrowaveStatemachine extends ITimerCallback,IStatemachine {
 	public interface SCInterface {
 	
 		public void raiseHigh();

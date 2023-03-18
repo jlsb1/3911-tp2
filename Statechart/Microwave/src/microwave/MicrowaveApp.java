@@ -33,7 +33,7 @@ public class MicrowaveApp {
 		
 		MicrowaveStatemachine sc = new MicrowaveStatemachine();
 		//TODO: uncomment the following statement if using time in the Statechart (e.g., a transition with trigger after 1s)
-		//sc.setTimer(new TimerService());
+		sc.setTimer(new TimerService());
 		
 		MicrowaveUI gui = new MicrowaveUI();
 		SCInterface sc_int = sc.getSCInterface();
