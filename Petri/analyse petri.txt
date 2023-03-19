@@ -4,7 +4,12 @@ Analyse du réseau de Pétri:
 Dans ce réseau, chaque place est bornée à 1: À tout moment, il ne peut qu’y avoir un seul jeton maximum à chaque place dans le système.
 
 - Conservation
-Dans tout le système, la somme des jetons reste constante dans chaque cas. La propriété de conservation est donc respectée: Le système est fiable et les ressources sont bien utilisées.
+M(Tunnel de MTL à Rive Sud) + M(Tunnel de Rive Sud à MTL) + M(Droit d'accès tunnel) = 1
+M(Lumière MTL) + M(Lumière Rive Sud) = 1
+Dans tous les états possibles de notre réseau de Petri, ces deux équations sont respectées. 
+La première équation montre qu'il est impossible qu'il y ait plus d'un véhicule dans le tunnel à la fois. Soit il y a un véhicule du côté MTL à Rive Sud, soit le tunnel est vide (droit d'accès) ou soit un véhicule est du côté Rive Sud à MTL.
+La deuxième équation montre qu'il est impossible que les deux lumières soient allumées en même temps.
+La propriété de conservation est donc respectée: Le système est fiable et les ressources sont bien utilisées.
 
 - Vivacité
 Pour vérifier la vivacité, il faut s’assurer que les transition peuvent être déclenchée:

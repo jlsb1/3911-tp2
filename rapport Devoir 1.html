@@ -37,6 +37,14 @@
         {
             content: ">  "
         }
+        p
+        {
+            text-align: justify;
+        }
+        img {
+  width: 100%;
+  height: auto;
+}
     </style>
 </head>
 <body>
@@ -156,6 +164,60 @@
         <a href="Petri/petrinet.png"><img src="Petri/petrinet.png"></a>
         <h3>Graphe de couverture</h3>
         <a href="Petri/graphe_couverture.png"><img src="Petri/graphe_couverture.png"></a>
+        <h3>Analyse</h3>
+        <p>
+            <p>
+                À partir du graphe de couverture, on constate que le cycle 
+                peut se répéter à l'infini et que tout les états du système 
+                sont accessible à partir de l'état initial.
+             </p>
+             <p>
+                Le réseau n'est pas borné car il y a deux omegas dans le graphe
+                de couverture.
+             </p>
+            <h4>Lois de conservation</h4>
+            <ul>
+                <li>
+                    M(Tunnel de MTL à Rive Sud) + M(Tunnel de Rive Sud à MTL) 
+                    + M(Droit d'accès tunnel) = 1 
+                </li>
+                <li>
+                    M(Lumière MTL) + M(Lumière Rive Sud) = 1 
+                </li>
+            </ul>
+            Dans tous les états possibles de notre réseau de Petri, 
+            ces deux équations sont respectées. <br>
+            La première équation montre qu'il est impossible qu'il y 
+            ait plus d'un véhicule dans le tunnel à la fois. Soit il y 
+            a un véhicule du côté MTL à Rive Sud, soit le tunnel est vide 
+            (droit d'accès) ou soit un véhicule est du côté Rive Sud à MTL. <br>
+            La deuxième équation montre qu'il est impossible que les deux
+             lumières soient allumées en même temps. <br>
+            La propriété de conservation est donc respectée: Le système
+             est fiable et les ressources sont bien utilisées.
+             <h4>Équité du système</h4>
+             <p>
+                Il ressort du graphe de couverture ci-haut qu'il est impossible de
+                faire entrer deux fois de suite un véhicule du même côté
+                du tunnel. Il faut absolument une alternance entre le 
+                côté Rive Sud et le côté MTL.
+             </p>
+             <p>
+                Vivacité: Chaque transition peut être franchie au moins une
+                fois à partir de M0. Chaque transition peut être franchie
+                exactement 1 fois de suite. Chaque transition a donc une vivacité L1.
+             </p>
+             <p>
+                Interblocage: Il est apparent du graphe de couverture ci-haut qu'il
+                est impossible d'arriver dans un état d'interblocage car à partir
+                de n'importe quel état il est possible d'aller dans un autre état.
+             </p>
+             <p>
+                Famine: Il n'y a pas de situation de famine car il n'y a qu'une 
+                seule branche et que celle-ci fait une alternance entre l'entrée 
+                du côté MTL et l'entrée du côté Rive Sud.
+             </p>
+        </p>
     <h2>Statechart</h2>
         <a href="Statechart/microwave.png"><img src="Statechart/microwave.png"></a>
         <ul>
