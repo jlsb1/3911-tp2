@@ -646,9 +646,140 @@
 
     <h2>Qualité du design</h2>
         <h3>Couplage et cohésion des modules</h3>
+            <ul>De manière générale, nos couplages sont faits par données et peuvent difficilement être améliorés.
+                
+                
         <h3>Fardeau</h3>
         <h3>Graphe IA</h3>
+        <table cellpadding="1px" border="1" style="text-align:left">
+            <thead>
+                <tr>
+                    <th>Pacquets</th>
+                    <th>Ce</th>
+                    <th>Ca</th>
+                    <th>Na</th>
+                    <th>Nc</th>
+                    <th>I</th>
+                    <th>A</th>
+                    <th>D</th>
+                </tr>
+            </thead>
+            <tr>
+                <td>Déplacement</td>
+                <td>2</td>
+                <td>5</td>
+                <td>4</td>
+                <td>13</td>
+                <td>0,29</td>
+                <td>0,31</td>
+                <td>0,4</td>
+            </tr>
+            <tr>
+                <td>Réservation</td>
+                <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                <td>5</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>Trajet</td>
+                <td>5</td>
+                <td>0</td>
+                <td>1</td>
+                <td>10</td>
+                <td>1</td>
+                <td>0,1</td>
+                <td>0,1</td>
+            </tr>
+            <tr>
+                <td>User</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>3</td>
+                <td>0</td>
+                <td>0</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>Manager</td>
+                <td>0</td>
+                <td>5</td>
+                <td>1</td>
+                <td>1</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+            </tr>
+        </table>
+    </ul>
+    <a href="screen_shot/graphe_ia.png"><img src="screen_shot/graphe_ia.png"></a>
+    <ul>
+        <li>Justification du Graphe IA</li>
+        <ul>
+            <li>
+                Nous observons que de manière générale, nos modules ont une bonne relation entre l’instabilité et 
+                l’abstraction puisque la différence D = A + I - 1 reste dans l’intervalle [0 - 0,4]. Le package “User” est 
+                l'exception avec une valeur de 1. Cela s’explique par le fait que ce package ne dépend d’aucun autre package et ne 
+                contient pas d’abstractions. Aussi, on remarque que les packages ayant un haut taux d’abstractions sont 
+                très peu instables, ce qui est souhaité. Vice versa, les packages instables sont très peu abstraits
+            </li>
+        </ul>
+    </ul>
+
+            
+
         <h3>Justifications de l'application des principes de conception</h3>
+            <ul>
+                <li>Principe de responsabilité unique</li>
+                Dans notre conception, nous avons veillé à ce que chaque classe ait une responsabilité unique 
+                et clairement définie. Par exemple, la classe “Seat” a pour but de représenter un siège et de 
+                gérer ces attributs tels que son identifiant, sa disposition, si il est réservé ou encore son prix. Ainsi, 
+                en appliquant ce principe, nous obtenons des classes simples et facilement maintenables: chaque classe 
+                a un but unique avec des fonctionnalités et des responsabilités limitées et clairement définies
+            </ul>
+            <ul><li>Principe d’ouverture/fermeture</li>
+                Dans notre conception, un exemple d'utilisation du principe d’ouverture/fermeture est
+                 l'interface "Manager" qui vise la création, la modification et la suppression d'objets. Cette
+                  interface donne la possibilité de créer de nouvelles classes qui implémentent "Manager" tout en 
+                  fournissant leurs propres implémentations de ces méthodes "création()", "modification()" et "suppression()" 
+                  sans avoir à modifier le code existant. Cela rend le code plus flexible et plus facile à maintenir, car de nouvelles
+                   classes peuvent être ajoutées qui implémentent "Manager" sans avoir à modifier le code existant. De cette façon, le
+                    code est extensible et évolutif, permettant d'ajouter de nouvelles fonctionnalités sans affecter les fonctionnalités existantes.
+
+            </ul>
+            <ul><li>Principe de substitution de Liskov</li>
+                Dans notre conception, le principe de substitution de Liskov a été respecté. Par exemple, 
+                si on regarde la classe “Accommodation” et la classe “Cabine” qui est un sous type de “Accommodation”, on 
+                peut constater que “Cabine” partage toute les attributs et méthodes de “Accomodation” ce qui permet de remplacer une instance 
+                de la classe “Accomodation” par une instance de la classe “Cabine” sans affecter l’exactitude du programme.
+            </ul>
+            <ul><li>Principe de ségrégation des interfaces</li>
+                Dans notre conception, nous avons appliqué le principe de ségrégation des interfaces. 
+                L'interface "Manager" est conçue de manière très spécifique pour répondre aux besoins des 
+                classes qui implémentent. En utilisant cette interface, les classes ne sont pas obligées d'implémenter
+                 des méthodes inutiles ou non pertinentes pour leur travail spécifique. Dans notre système, plusieurs
+                  classes ont implémenté l'interface "Manager", telles que "Manager_arret", "Manager_compagnie", "Manager_liaison", "
+                  Manager_transport" et "Manager_reservation". Ces classes partagent des fonctionnalités similaires, et grâce à l'utilisation de l'interface "Manager", 
+                elles n'ont pas besoin d'implémenter des méthodes qui ne sont pas pertinentes pour leur cas d'utilisation spécifique.
+            </ul>
+            <ul><li>Principe d’inversion des dépendances</li></ul>
+            <ul><li>Principe de réutilisation par composition</li>
+                Dans notre conception, nous avons appliqué le principe de réutilisation par
+                 composition en favorisant la composition plutôt que l'héritage. Un exemple 
+                 concret de cela est la classe "SectionPaquebot", qui contient un attribut
+                  "cabins" qui est un HashMap d'instances de la classe "Cabine".
+                Cela nous permet de réutiliser les fonctionnalités de la classe "Cabine" 
+                s'il le faut sans avoir à créer une nouvelle classe qui hérite de ses fonctionnalités. 
+                De plus, en utilisant la composition, nous avons plus de flexibilité pour modifier ou
+                 étendre la classe "SectionPaquebot". Par exemple, si nous décidons d'ajouter une nouvelle 
+                 fonctionnalité à la classe "Cabine", cela n'aura pas d'impact direct sur la classe "SectionPaquebot". Au 
+                 lieu de cela, nous pouvons simplement ajouter la nouvelle fonctionnalité à la classe "Cabine" et elle sera
+                  automatiquement disponible pour toutes les instances de cabine qui sont utilisées dans la classe "SectionPaquebot".
+                </ul>
 </p>
 </body>
 </html>
