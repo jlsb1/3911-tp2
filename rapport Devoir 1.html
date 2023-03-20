@@ -766,7 +766,11 @@
                   Manager_transport" et "Manager_reservation". Ces classes partagent des fonctionnalités similaires, et grâce à l'utilisation de l'interface "Manager", 
                 elles n'ont pas besoin d'implémenter des méthodes qui ne sont pas pertinentes pour leur cas d'utilisation spécifique.
             </ul>
-            <ul><li>Principe d’inversion des dépendances</li></ul>
+            <ul><li>Principe d’inversion des dépendances</li>
+                Dans notre conception, nous avons pris soin de respecter le principe d'inversion des dépendances : l'implémentation d'interfaces nous a permis de réduire les dépendances entre chaque classe. 
+                Ainsi, nous obtenons un code plus flexible et plus facile à maintenir.
+            </ul>
+    
             <ul><li>Principe de réutilisation par composition</li>
                 Dans notre conception, nous avons appliqué le principe de réutilisation par
                  composition en favorisant la composition plutôt que l'héritage. Un exemple 
