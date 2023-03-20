@@ -76,7 +76,7 @@
             <br />
             <span style="font-weight: bold;">Courriel: </span> jean-loup.bergeron@umontreal.ca
             <br />
-            <span style="font-weight: bold;">temps mis: </span>
+            <span style="font-weight: bold;">temps mis: 9 heures</span>
         </p>
     <h2>Distribution des tâches</h2>
     <p>
@@ -259,6 +259,391 @@
             </li>
         </ul>
     <h2>Design du logiciel</h2>
+        <ul>
+            <li>Pour la révision de notre design, nous avons commencé par faire deux tableaux nous aidant à identifier des problèmes potentiels. Soit 
+                un tableau contenant le fardeau de chaque module, et un tableau contenant la cohésion de chaque module. Il 
+                est à noter que les tableaux ici présents sont finaux, insérer les itérations aurait pris beaucoup de place.</li>
+            <ul>
+                <li>Changement fait dans le diagramme de classe: </li>
+                <ul>
+                    <li>Déplacement de la fonction “setReserve()” de la classe “Cabine” et “Seat” à la classe “Accommodation”. Le changement 
+                        améliore le couplage, qui était problématique.</li>
+                    <li>Ajout de l’interface “Manager”</li>   
+                    <li>Ajout de plusieurs classes implémentant l’interface “Manager”. Ces deux derniers changements améliorent la cohésion</li> 
+                </ul>
+                <li>Changement fait dans	 les diagrammes de séquences système:</li>
+                    <ul>
+                        <li>Rectification des erreurs mise en évidence dans la correction du devoir 1</li>
+                    </ul>
+                <li>Changement fait dans les diagrammes de séquences:</li>
+                    <ul>
+                        <li>Ajout de lifeline du type “Manager_type” dans les diagrammes le nécessitant</li>
+                        <li>Ajout des possibilités d’échec</li>
+                        <li>Rectification des erreurs mise en évidence dans la correction du devoir 1</li>
+                    </ul>
+                <li>Changement fait dans les diagrammes de paquets:</li>
+                    <ul>
+                        <li>Ajout des classes de type “Manager_type” </li>
+                        <li>Ajout de l’interface “Manager”</li>
+                    </ul>
+                <li>Changement fait dans les contraintes OCL:</li>
+                    <ul><li>Aucun changement necessaire</li></ul>
+                <li>Identification des modules réutilisables: </li>
+                    <ul><li>La réutilisabilité de chaque module est indiquée dans le tableau 1</li></ul>
+            </ul>
+        </ul>
+    <ul>
+        <h4>Tableau 1:</h3>
+        <table cellpadding="1px" border="1" style="text-align:left">
+            <thead>
+                <tr>
+                    <th>Classe</th>
+                    <th>Domaine</th>
+                    <th>Fardeau</th>
+                    <th>Reutilisabilité</th>
+                </tr>
+            </thead>
+            <tr>
+                <td>Systeme_admin</td>
+                <td>Application</td>
+                <td>25+</td>
+                <td>Faible</td>
+            </tr>
+            <tr>
+                <td>CieTransport</td>
+                <td>Métier</td>
+                <td>16</td>
+                <td>Faible</td>
+            </tr>
+            <tr>
+                <td>Liaison</td>
+                <td>Application</td>
+                <td>5</td>
+                <td>Forte</td>
+            </tr>
+            <tr>
+                <td>Trajet</td>
+                <td>Métier</td>
+                <td>8</td>
+                <td>Moyen</td>
+            </tr>
+            <tr>
+                <td>Vol</td>
+                <td>Métier</td>
+                <td>7</td>
+                <td>Moyen</td>
+            </tr>
+            <tr>
+                <td>Itinéraire</td>
+                <td>Métier</td>
+                <td>8</td>
+                <td>Moyen</td>
+            </tr>
+            <tr>
+                <td>Arret</td>
+                <td>Application</td>
+                <td>1</td>
+                <td>Forte</td>
+            </tr>
+            <tr>
+                <td>Gare</td>
+                <td>Métier</td>
+                <td>1</td>
+                <td>Forte</td>
+            </tr>
+            <tr>
+                <td>Aéroport</td>
+                <td>Métier</td>
+                <td>1</td>
+                <td>Forte</td>
+            </tr>
+            <tr>
+                <td>port</td>
+                <td>Métier</td>
+                <td>1</td>
+                <td>Forte</td>
+            </tr>
+            <tr>
+                <td>MoyenDeTransport</td>
+                <td>Application</td>
+                <td>4</td>
+                <td>FOrte</td>
+            </tr>
+            <tr>
+                <td>Train</td>
+                <td>Application</td>
+                <td>1</td>
+                <td>Forte</td>
+            </tr>
+            <tr>
+                <td>Avion</td>
+                <td>Application</td>
+                <td>1</td>
+                <td>Forte</td>
+            </tr>
+            <tr>
+                <td>Paquebot</td>
+                <td>Application</td>
+                <td>1</td>
+                <td>Forte</td>
+            </tr>
+            <tr>
+                <td>Section</td>
+                <td>Application</td>
+                <td>4</td>
+                <td>Forte</td>
+            </tr>
+            <tr>
+                <td>SectionTrain</td>
+                <td>Application</td>
+                <td>9</td>
+                <td>Moyen</td>
+            </tr>
+            <tr>
+                <td>SectionTrain</td>
+                <td>Application</td>
+                <td>9</td>
+                <td>Moyen</td>
+            </tr>
+            <tr>
+                <td>SectionPaquebot</td>
+                <td>Application</td>
+                <td>12</td>
+                <td>Moyen</td>
+            </tr>
+            <tr>
+                <td>Seat</td>
+                <td>Application</td>
+                <td>11</td>
+                <td>Moyen</td>
+            </tr>
+            <tr>
+                <td>Cabin</td>
+                <td>Application</td>
+                <td>8</td>
+                <td>Moyen</td>
+            </tr>
+            <tr>
+                <td>Accommodation</td>
+                <td>Métier</td>
+                <td>3</td>
+                <td>Forte</td>
+            </tr>
+            <tr>
+                <td>System_client</td>
+                <td>Application</td>
+                <td>25+</td>
+                <td>Faible</td>
+            </tr>
+            <tr>
+                <td>Reservation</td>
+                <td>Application</td>
+                <td>8</td>
+                <td>Moyen</td>
+            </tr>
+            <tr>
+                <td>Client</td>
+                <td>Métier</td>
+                <td>2</td>
+                <td>forte</td>
+            </tr>
+            <tr>
+                <td>Paiement</td>
+                <td>Métier</td>
+                <td>2</td>
+                <td>Forte</td>
+            </tr>
+            <tr>
+                <td>CarteCrédit</td>
+                <td>Métier</td>
+                <td>1</td>
+                <td>Forte</td>
+            </tr>
+            <tr>
+                <td>Confirmation</td>
+                <td>Métier</td>
+                <td>1</td>
+                <td>Forte</td>
+            </tr>            
+        </table>
+    </ul>
+
+    <ul>
+        <h4>Tableau 2:</h3>
+        <table cellpadding="1px" border="1" style="text-align:left">
+            <thead>
+                <tr>
+                    <th>Classe</th>
+                    <th>Domaine</th>
+                    <th>Cohésion</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tr>
+                <td>Systeme_admin</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>Presque aucune liaison avec domaine mixte, un seul rôle : transmettre les commande</td>
+            </tr>
+            <tr>
+                <td>CieTransport</td>
+                <td>Métier</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>Liaison</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>Trajet</td>
+                <td>Métier</td>
+                <td>Forte</td>
+                <td>En liaison avec même domaine</td>
+            </tr>
+            <tr>
+                <td>Vol</td>
+                <td>Métier</td>
+                <td>Forte</td>
+                <td>En liaison avec même domaine</td>
+            </tr>
+            <tr>
+                <td>Itinéraire</td>
+                <td>Métier</td>
+                <td>FOrte</td>
+                <td>En liaison avec même domaine</td>
+            </tr>
+            <tr>
+                <td>Arret</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>Gare</td>
+                <td>Métier</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>Aéroport</td>
+                <td>Métier</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>port</td>
+                <td>Métier</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>MoyenDeTransport</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>Train</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>En liaison avec même domaine</td>
+            </tr>
+            <tr>
+                <td>Avion</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>En liaison avec même domaine</td>
+            </tr>
+            <tr>
+                <td>Paquebot</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>En liaison avec même domaine</td>
+            </tr>
+            <tr>
+                <td>Section</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>SectionTrain</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>SectionTrain</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>SectionPaquebot</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>Seat</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>Cabin</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>Accommodation</td>
+                <td>Métier</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>System_client</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>En liaison avec même domaine seulement. Un seul rôle : transmettre commande</td>
+            </tr>
+            <tr>
+                <td>Reservation</td>
+                <td>Application</td>
+                <td>Forte</td>
+                <td>En liaison avec même domaine</td>
+            </tr>
+            <tr>
+                <td>Client</td>
+                <td>Métier</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>Paiement</td>
+                <td>Métier</td>
+                <td>Forte</td>
+                <td>Propriétés contribuent à l’implémentation</td>
+            </tr>
+            <tr>
+                <td>CarteCrédit</td>
+                <td>Métier</td>
+                <td>Forte</td>
+                <td>En liaison avec même domaine</td>
+            </tr>
+            <tr>
+                <td>Confirmation</td>
+                <td>Métier</td>
+                <td>Forte</td>
+                <td>En liaison avec même domainerte</td>
+            </tr>            
+        </table>
+    </ul>
+
     <h2>Qualité du design</h2>
         <h3>Couplage et cohésion des modules</h3>
         <h3>Fardeau</h3>
