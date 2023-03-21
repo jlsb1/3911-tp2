@@ -1,8 +1,6 @@
 context Aeroport 
 inv: self.id.size() = 3
-inv: self.id.substring(1,1).toInteger().oclIsUndefined()
-and self.id.substring(2,2).toInteger().oclIsUndefined()
-and self.id.substring(3,3).toInteger().oclIsUndefined()
+inv: self.id.matches('[a-zA-Z]*')
 inv: Aeroport.allInstances()->forAll(x1, x2 | x1.id <> x2.id)
 
 context CieDeTransport
@@ -11,6 +9,9 @@ context Terminal
 inv: self.compagnies->forAll(x1, x2 | x1.id.substring(1,2) <> x2.id.substring(1,2))
 
 context Vol
+inv: self.id.substring(1,2).matches('[a-zA-Z]*')
+and self.id.substring(2).matches('[0-9]*')
+and self.compagnies.vols->forAll(x1,x2 |x1.id.substring(1,2) <> x2.id.substring(1,2) or x1 = x2)
 inv: self.origine <> self.destination
 
 context SectionAvion
@@ -38,12 +39,12 @@ inv: self.section.cabins->forAll(c | c.price = self.price)
 
 context Gare 
 inv: self.id.size() = 3
-inv: self.id.substring(1,1).toInteger().oclIsUndefined()
-and self.id.substring(2,2).toInteger().oclIsUndefined()
-and self.id.substring(3,3).toInteger().oclIsUndefined()
+inv: self.id.matches('[a-zA-Z]*')
 inv: Gare.allInstances()->forAll(x1, x2 | x1.id <> x2.id)
 
 context Réservation
+pre: self.flight.availableSeats > 0
+pre: self.itinerary.availableCabins > 0
 inv: self.flight.availableSeats->includes(self.seat)
 inv: self.itinerary.availableCabins->includes(self.cabin)
 
